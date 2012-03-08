@@ -1,18 +1,40 @@
 Project SweJug!
 
-prerequirements:
-1. maven2
-   http://maven.apache.org/download.html
+Used the maven-gae-plugin from kindleit.
+http://www.kindleit.net/maven_gae_plugin/
 
-2. Google App Engine SDK for Java
-   http://code.google.com/intl/sv-SE/appengine/downloads.html#Google_App_Engine_SDK_for_Java
+1.
+First download the GAE SDK and unpack it.
+You only need to do this once per SDK version.
+(The SDK will be unpacked in the maven repository)
+shell> mvn gae:unpack
 
-1. build the application
-<swejug>$ mvn clean install
+2.
+Build the webapp.
+shell> mvn clean install
 
-2. to run the application
-<swejug>$ dev_server target/swejug
-  dev_server.[cmd|sh] is located in the bin folder of your GAE SDK installation folder.
+3.a
+To run the webapp use:
+(Ctrl-C to stop the server)
+shell> mvn gae:run
 
-coming soon:
-1. maven only project
+3.b
+To start and stop the webapp use:
+shell> mvn gae:start
+shell> mvn gae:stop
+
+4.
+Deploy the webapp to GAE
+shell> mvn gae:update
+
+To be able to deploy the webapp you must be registered for
+the application with a matching email at GAE. Set this
+up in you maven settings.xml
+
+<servers>
+  <server>
+    <id>appengine.google.com</id>
+    <username>username@gmail.com</username>
+    <password>password</password>
+  </server>
+</servers>
