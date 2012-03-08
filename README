@@ -14,3 +14,5 @@ prerequirements:
 <swejug>$ dev_server target/swejug
   dev_server.[cmd|sh] is located in the bin folder of your GAE SDK installation folder.
 
+coming soon:
+1. maven only project
