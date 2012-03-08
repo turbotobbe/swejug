@@ -1,1 +1,16 @@
-Hello github!
+Project SweJug!
+
+prerequirements:
+1. maven2
+   http://maven.apache.org/download.html
+
+2. Google App Engine SDK for Java
+   http://code.google.com/intl/sv-SE/appengine/downloads.html#Google_App_Engine_SDK_for_Java
+
+1. build the application
+<swejug>$ mvn clean install
+
+2. to run the application
+<swejug>$ dev_server target/swejug
+  dev_server.[cmd|sh] is located in the bin folder of your GAE SDK installation folder.
+
