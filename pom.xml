@@ -24,6 +24,40 @@
       <version>${gae.version}</version>
     </dependency>
 
+<!--
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-labs</artifactId>
+      <version>${gae.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-jsr107cache</artifactId>
+      <version>${gae.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.appengine.orm</groupId>
+      <artifactId>datanucleus-appengine</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.datanucleus</groupId>
+      <artifactId>datanucleus-core</artifactId>
+      <version>3.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.datanucleus</groupId>
+      <artifactId>datanucleus-jpa</artifactId>
+      <version>2.1.8</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.jdo</groupId>
+      <artifactId>jdo2-api</artifactId>
+      <version>2.2</version>
+    </dependency>
+-->
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-server</artifactId>
@@ -39,6 +73,7 @@
       <artifactId>jersey-json</artifactId>
       <version>${jersey.version}</version>
     </dependency>
+
 <!--
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -67,6 +102,10 @@
 	  <serverId>appengine.google.com</serverId>
 	  <sdkDir>${appengine.sdk.root}</sdkDir>
 	  <appDir>${project.build.directory}/${project.build.finalName}</appDir>
+	  <jvmFlags>
+	    <jvmFlag>-Dappengine.user.timezone=UTC</jvmFlag>
+	    <!-- <jvmFlag>-Djava.security.debug=access,failure</jvmFlag> -->
+	  </jvmFlags>
 	</configuration>
 	<dependencies>
 	  <dependency>
