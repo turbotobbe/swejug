@@ -12,6 +12,7 @@
 
   <properties>
     <gae.version>1.6.3</gae.version>
+    <jersey.version>1.12</jersey.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -23,6 +24,21 @@
       <version>${gae.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 <!--
     <dependency>
       <groupId>com.google.appengine</groupId>
