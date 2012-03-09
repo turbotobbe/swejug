@@ -1,34 +1,30 @@
 package se.lingonskogen.gae.swejug.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Bean
+public abstract class Bean
 {
-    private String kind;
-    
-    private List<Link> links;
+   private String kind;
 
-    public String getKind()
-    {
-        return kind;
-    }
+   private List<Link> links = new ArrayList<Link>();
 
-    public void setKind(String kind)
-    {
-        this.kind = kind;
-    }
+   public String getKind()
+   {
+      return kind;
+   }
 
-    public List<Link> getLinks()
-    {
-        return links;
-    }
+   public void setKind(String kind)
+   {
+      this.kind = kind;
+   }
 
-    public void setLinks(List<Link> links)
-    {
-        this.links = links;
-    }
+   public List<Link> getLinks()
+   {
+      return links;
+   }
 
 }

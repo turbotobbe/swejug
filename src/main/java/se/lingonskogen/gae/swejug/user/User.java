@@ -9,6 +9,8 @@ public class User extends Bean
 {
     public static final String KIND = User.class.getSimpleName();
     
+    public static final String PROP_NAME = "name";
+
     private String name;
 
     public String getName()
