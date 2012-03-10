@@ -1,16 +1,16 @@
-package se.lingonskogen.gae.swejug.user;
+package se.lingonskogen.gae.swejug.group;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import se.lingonskogen.gae.swejug.rest.Bean;
 
 @XmlRootElement
-public class User extends Bean
+public class Group extends Bean
 {
-    public static final String KIND = User.class.getSimpleName();
+    public static final String KIND = Group.class.getSimpleName();
     
     public static final String PROP_NAME = "name";
-
+    
     private String name;
 
     public String getName()
@@ -22,5 +22,5 @@ public class User extends Bean
     {
         this.name = name;
     }
-
+    
 }

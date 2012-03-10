@@ -18,6 +18,6 @@
    </servlet-mapping>
 
    <listener>
-      <listener-class>se.lingonskogen.gae.swejug.user.UserInstaller</listener-class>
+      <listener-class>se.lingonskogen.gae.swejug.InstallListener</listener-class>
    </listener>
 </web-app>
