@@ -8,16 +8,16 @@
       <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
       <init-param>
          <param-name>com.sun.jersey.config.property.packages</param-name>
-         <param-value>se.lingonskogen.gae.swejug</param-value>
+         <param-value>se.lingonskogen.gae.swejug.content</param-value>
       </init-param>
    </servlet>
 
    <servlet-mapping>
       <servlet-name>jersey-rest</servlet-name>
-      <url-pattern>/*</url-pattern>
+      <url-pattern>/rest/*</url-pattern>
    </servlet-mapping>
 
    <listener>
-      <listener-class>se.lingonskogen.gae.swejug.user.UserInstaller</listener-class>
+      <listener-class>se.lingonskogen.gae.swejug.InstallListener</listener-class>
    </listener>
 </web-app>
