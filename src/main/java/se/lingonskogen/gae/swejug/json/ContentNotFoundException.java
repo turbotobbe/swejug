@@ -1,4 +1,4 @@
-package se.lingonskogen.gae.swejug.content;
+package se.lingonskogen.gae.swejug.json;
 
 
 public class ContentNotFoundException extends Exception

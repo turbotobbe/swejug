@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import se.lingonskogen.gae.swejug.json.ContentNotFoundException;
+import se.lingonskogen.gae.swejug.json.ContentNotUniqueException;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -16,7 +19,7 @@ public class ContentStore<T>
 {
     private static final Logger LOG = Logger.getLogger(ContentStore.class.getName());
 
-    private static final String ROOT = "content";
+    public static final String ROOT = "content";
     
     private ContentUrlKeyCreator<T> creator;
     

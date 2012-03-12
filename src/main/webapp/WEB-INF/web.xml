@@ -8,7 +8,8 @@
       <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
       <init-param>
          <param-name>com.sun.jersey.config.property.packages</param-name>
-         <param-value>se.lingonskogen.gae.swejug.content</param-value>
+         <!--  <param-value>se.lingonskogen.gae.swejug.content,org.codehaus.jackson.jaxrs</param-value>  -->
+         <param-value>se.lingonskogen.gae.swejug.json</param-value>
       </init-param>
    </servlet>
 

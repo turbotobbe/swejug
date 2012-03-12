@@ -23,9 +23,12 @@ import javax.ws.rs.core.UriInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import se.lingonskogen.gae.swejug.json.ContentNotFoundException;
+import se.lingonskogen.gae.swejug.json.ContentNotUniqueException;
+
 import com.google.appengine.api.datastore.Entity;
 
-@Path("content")
+//@Path("content")
 public class ContentResource
 {
     private static final Logger LOG = Logger.getLogger(ContentResource.class.getName());
@@ -33,6 +36,10 @@ public class ContentResource
     @Context
     UriInfo uriInfo;
 
+    /*
+     * GET 
+     */
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response find()
@@ -64,6 +71,10 @@ public class ContentResource
         return handleFind(uk1, uk2, uk3);
     }
 
+    /*
+     * POST
+     */
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(JSONObject content)
@@ -87,6 +98,10 @@ public class ContentResource
         return handleCreate(content, uk1, uk2);
     }
 
+    /*
+     * PUT
+     */
+    
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{uk1}")
@@ -111,6 +126,10 @@ public class ContentResource
         return handleUpdate(content, uk1, uk2, uk3);
     }
 
+    /*
+     * DELETE
+     */
+    
     @DELETE
     @Path("{uk1}")
     public Response delete(@PathParam("uk1") String uk1)
@@ -133,7 +152,7 @@ public class ContentResource
     }
 
     /*
-     * handlers
+     * HANDLERS
      */
     
     private Response handleFind(String... urlkeys)

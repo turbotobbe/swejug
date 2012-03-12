@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import se.lingonskogen.gae.swejug.group.GroupInstaller;
+import se.lingonskogen.gae.swejug.json.ContentInstaller;
 
 public class InstallListener implements ServletContextListener
 {
@@ -14,7 +14,7 @@ public class InstallListener implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent event)
     {
-        String className = GroupInstaller.class.getName();
+        String className = ContentInstaller.class.getName();
         try
         {
             LOG.info("Running installer: " + className);
