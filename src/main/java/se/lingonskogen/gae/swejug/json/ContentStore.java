@@ -21,14 +21,22 @@ public class ContentStore
    private static final Logger LOG = Logger.getLogger(ContentStore.class.getName());
 
    public static final String KIND = "Content";
+
+   public static final String ROOT_META_TYPE = "Root";
    
+   public static final String DIV = "_";
+
+   public static final String PROP_META = "meta";
+
    public static final String PROP_TYPE = "type";
 
    public static final String PROP_TOTAL = "total";
 
-   public static final String ROOT_TYPE = "Root";
+   public static final String PROP_META_TYPE = PROP_META + DIV + PROP_TYPE;
+
+   public static final String PROP_META_TOTAL = PROP_META + DIV + PROP_TOTAL;
    
-   public UrlKeyGenerator getUrlKeyGenerator()
+   public UrlKeyGenerator getUrlKeyGenerator(String type)
    {
       return new NameUrlKeyGenerator();
    }
@@ -180,7 +188,7 @@ public class ContentStore
    {
       Key parentkey = entity.getParent();
       Entity parentEntity = store.get(parentkey);
-      String propertyName = PROP_TOTAL + entity.getProperty(PROP_TYPE);
+      String propertyName = PROP_META_TOTAL + DIV + entity.getProperty(PROP_META_TYPE);
       Long total = 0L;
       if (parentEntity.hasProperty(propertyName))
       {
@@ -193,7 +201,8 @@ public class ContentStore
    
    private String createUrlKey(Entity content) throws UrlKeyGeneratorException
    {
-      UrlKeyGenerator generator = getUrlKeyGenerator();
+      String type = (String) content.getProperty(PROP_META_TYPE);
+      UrlKeyGenerator generator = getUrlKeyGenerator(type);
       return generator.generate(content);
    }
 
@@ -217,7 +226,7 @@ public class ContentStore
    
    private Key getRootKey()
    {
-      return KeyFactory.createKey(KIND, ROOT_TYPE);
+      return KeyFactory.createKey(KIND, ROOT_META_TYPE);
    }
 
    private void enter(String method, String... urlkeys)

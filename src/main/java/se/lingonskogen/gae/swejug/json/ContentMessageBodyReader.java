@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONTokener;
@@ -68,30 +70,97 @@ public class ContentMessageBodyReader implements MessageBodyReader<Entity>
    private Entity jsonToEntity(JSONObject content) throws JSONException, UrlKeyGeneratorException
    {
       // check for required property
-      if (!content.has(ContentStore.PROP_TYPE))
+      if (!content.has(ContentStore.PROP_META))
       {
-         throw new JSONException("Missing required property " + ContentStore.PROP_TYPE); 
+         throw new JSONException("Missing required meta"); 
       }
+      JSONObject meta = content.getJSONObject(ContentStore.PROP_META);
+      if (!meta.has(ContentStore.PROP_TYPE))
+      {
+         throw new JSONException("Missing required meta type"); 
+      }
+      String type = meta.getString(ContentStore.PROP_META_TYPE);
       
       // generate urlkey
-      UrlKeyGenerator generator = getUrlKeyGenerator();
+      UrlKeyGenerator generator = getUrlKeyGenerator(type);
       String urlkey = generator.generate(content);
       
       // create entity
       Entity entity = new Entity(ContentStore.KIND, urlkey);
-      
-      // copy properties
-      @SuppressWarnings("unchecked")
-      Iterator<String> keys = content.keys();
-      while (keys.hasNext())
-      {
-         String key = keys.next();
-         entity.setProperty(key, content.get(key));
-      }
+      Stack<String> keys = new Stack<String>();
+      buildEntity(content, entity, keys);
+
       return entity;
    }
 
-   private UrlKeyGenerator getUrlKeyGenerator()
+   private void buildEntity(JSONObject jObj, Entity entity, Stack<String> keys) throws JSONException
+   {
+      for (@SuppressWarnings("unchecked")
+      Iterator<String> it = jObj.keys(); it.hasNext();)
+      {
+         String key = (String) it.next();
+         Object val = jObj.get(key);
+         keys.push(key);
+         if (val instanceof JSONObject)
+         {
+            JSONObject jo = (JSONObject) val;
+            buildEntity(jo, entity, keys);
+         }
+         else if (val instanceof JSONArray)
+         {
+            JSONArray ja = (JSONArray) val;
+            buildentity(ja, entity, keys);
+         }
+         else
+         {
+            String propertyKey = makePropertyKey(keys);
+            entity.setProperty(propertyKey, val);
+         }
+         keys.pop();
+      }
+   }
+
+   private void buildentity(JSONArray jArr, Entity entity, Stack<String> keys) throws JSONException
+   {
+      for (int i = 0; i < jArr.length(); i++)
+      {
+         keys.push(Integer.toString(i));
+         Object obj = jArr.get(i);
+         if (obj instanceof JSONObject)
+         {
+            JSONObject jo = (JSONObject) obj;
+            buildEntity(jo, entity, keys);
+         }
+         else if (obj instanceof JSONArray)
+         {
+            JSONArray ja = (JSONArray) obj;
+            buildentity(ja, entity, keys);
+         }
+         else
+         {
+            String propertyKey = makePropertyKey(keys);
+            entity.setProperty(propertyKey, obj);
+         }
+         keys.pop();
+      }
+   }
+
+   private String makePropertyKey(Stack<String> keys)
+   {
+      StringBuilder sb = new StringBuilder();
+      for (String k : keys)
+      {
+         if (sb.length() > 0)
+         {
+            sb.append(ContentStore.DIV);
+         }
+         sb.append(k);
+      }
+      String propertyKey = sb.toString();
+      return propertyKey;
+   }
+
+   private UrlKeyGenerator getUrlKeyGenerator(String type)
    {
       return new NameUrlKeyGenerator();
    }
