@@ -30,9 +30,13 @@ public class ContentStore
 
    public static final String PROP_TYPE = "type";
 
+   public static final String PROP_CREATED = "created";
+
    public static final String PROP_TOTAL = "total";
 
    public static final String PROP_META_TYPE = PROP_META + DIV + PROP_TYPE;
+
+   public static final String PROP_META_CREATED = PROP_META + DIV + PROP_CREATED;
 
    public static final String PROP_META_TOTAL = PROP_META + DIV + PROP_TOTAL;
    

@@ -5,4 +5,7 @@
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
   </system-properties>
+  <system-properties>
+      <property name="se.lingonskogen.gae.swejug.config.file" value="WEB-INF/config.json"/>
+   </system-properties>
 </appengine-web-app>

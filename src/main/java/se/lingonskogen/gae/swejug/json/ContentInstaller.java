@@ -28,8 +28,8 @@ public class ContentInstaller implements Installer
       catch (EntityNotFoundException e)
       {
          Entity entity = new Entity(key);
-         entity.setProperty(ContentStore.PROP_TYPE, ContentStore.ROOT_META_TYPE);
-         entity.setProperty("created", new Date());
+         entity.setProperty(ContentStore.PROP_META_TYPE, ContentStore.ROOT_META_TYPE);
+         entity.setProperty(ContentStore.PROP_META_CREATED, new Date());
          LOG.info("Installing content. " + key.toString());
          store.put(entity);
       }

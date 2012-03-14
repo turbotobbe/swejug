@@ -19,6 +19,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import se.lingonskogen.gae.swejug.config.ConfigFactory;
+
 import com.google.appengine.api.datastore.Entity;
 
 
@@ -39,6 +41,7 @@ public class ContentResource
    @Produces(MediaType.APPLICATION_JSON)
    public Response find()
    {
+      LOG.log(Level.INFO, ConfigFactory.getConfig().getString("test", "lorem"));
       return handleFind();
    }
 
