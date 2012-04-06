@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>${note.index}</title>
+</head>
+<body>
+<h1>View User Blog Note - ${note.meta.type}</h1>
+<p>created: $util.formatDate($note.meta.created)</p>
+<p>updated: $util.formatDate($note.meta.updated)</p>
+#foreach ($key in $note.meta.total.keySet())
+<p>
+  $key : $note.meta.total.get($key)
+</p>
+#end
+<p>content: $note.content</p>
+</body>
+</html>

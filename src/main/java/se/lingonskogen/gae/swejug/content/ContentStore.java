@@ -1,209 +1,149 @@
 package se.lingonskogen.gae.swejug.content;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import se.lingonskogen.gae.swejug.json.ContentNotFoundException;
-import se.lingonskogen.gae.swejug.json.ContentNotUniqueException;
+import se.lingonskogen.gae.swejug.beans.Content;
+import se.lingonskogen.gae.swejug.beans.EntityBuilder;
+import se.lingonskogen.gae.swejug.beans.Order;
+import se.lingonskogen.gae.swejug.config.Config;
+import se.lingonskogen.gae.swejug.config.ConfigException;
+import se.lingonskogen.gae.swejug.config.ConfigFactory;
+import se.lingonskogen.gae.swejug.content.err.ContentNotFoundException;
+import se.lingonskogen.gae.swejug.content.err.ContentNotUniqueException;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyFactory.Builder;
 
-public class ContentStore<T>
+public class ContentStore
 {
-    private static final Logger LOG = Logger.getLogger(ContentStore.class.getName());
+   private final EntityStore entityStore;
+   
+   @SuppressWarnings("rawtypes")
+   private Map<String, EntityBuilder> builders = new HashMap<String, EntityBuilder>();
 
-    public static final String ROOT = "content";
-    
-    private ContentUrlKeyCreator<T> creator;
-    
-    private ContentConverter<T> converter;
+   private UrlBuilder urlBuilder = new DefaultUrlBuilder();
 
-    public ContentUrlKeyCreator<T> getContentUrlKeyCreator()
-    {
-        return this.creator;
-    }
+   public ContentStore(String rootLabel)
+   {
+      entityStore = new EntityStore(rootLabel);
+   }
 
-    public void setContentUrlKeyCreator(ContentUrlKeyCreator<T> creator)
-    {
-        this.creator = creator;
-    }
-    
-    public ContentConverter<T> getContentConverter()
-    {
-        return this.converter;
-    }
-    
-    public void setContentConverter(ContentConverter<T> converter)
-    {
-        this.converter = converter;
-    }
+   public void setUrlBuilder(UrlBuilder urlBuilder)
+   {
+      this.urlBuilder = urlBuilder;
+      builders.clear();
+   }
+   
+   public void setUserKey(Key userKey)
+   {
+      entityStore.setUserKey(userKey);
+   }
+   
+   @SuppressWarnings("rawtypes")
+   public Content getContent(Key key, boolean resolve) throws ConfigException, ContentNotFoundException
+   {
+      Entity entity = entityStore.getEntity(key);
+      String type = (String) entity.getProperty(Content.META_TYPE);
+      EntityBuilder builder = getEntityBuilder(type);
+      Content content = builder.buildContent(this, entity, resolve);
+      return content;
+   }
+   
+   public Content getContent(Key key) throws ConfigException, ContentNotFoundException
+   {
+      return getContent(key, true);
+   }
 
-    public T find(String[] urlkeys)
-        throws ParentContentNotFoundException, ContentNotFoundException
-    {
-        DatastoreService store = DatastoreServiceFactory.getDatastoreService();
-        
-        Key contentKey = makeKey(urlkeys);
-        
-        Entity contentEntity = null;
-        try
-        {
-            contentEntity = store.get(contentKey);
-        }
-        catch (EntityNotFoundException e)
-        {
-            String msg = "Unable to find content. " + contentKey.toString();
-            LOG.log(Level.INFO, msg);
-            throw new ContentNotFoundException(msg, e);
-        }
-        
-        ContentConverter<T> converter = getContentConverter();
-        return converter.toContent(contentEntity);
-    }
-    
-    public String create(T content, String... urlkeys)
-            throws ParentContentNotFoundException, ContentNotUniqueException
-    {
-        DatastoreService store = DatastoreServiceFactory.getDatastoreService();
-        
-        Key parentKey = makeKey(urlkeys);
+   @SuppressWarnings("rawtypes")
+   public Content getContent(String... urlkeys) throws ConfigException, ContentNotFoundException
+   {
+      Entity entity = entityStore.getEntity(urlkeys);
+      String type = (String) entity.getProperty(Content.META_TYPE);
+      EntityBuilder builder = getEntityBuilder(type);
+      Content content = builder.buildContent(this, entity, true);
+      return content;
+   }
 
-        // get parent entity
-        Entity parentEntity = null;
-        try
-        {
-            parentEntity = store.get(parentKey);
-        }
-        catch (EntityNotFoundException e)
-        {
-            String msg = "Unable to find parent. " + parentKey.toString();
-            LOG.log(Level.INFO, msg);
-            throw new ParentContentNotFoundException(msg, e);
-        }
+   public List<? extends Content> getContentList(Key parentKey, String type, Integer limit, Integer offset) throws ConfigException, ContentNotFoundException
+   {
+      List<Order> order = Collections.emptyList();
+      return getContentList(parentKey, type, order, limit, offset);
+   }
+   
+   @SuppressWarnings("unchecked")
+   public List<? extends Content> getContentList(Key parentKey, String type, List<Order> order, Integer limit, Integer offset) throws ConfigException, ContentNotFoundException
+   {
+      List<Content> list = new ArrayList<Content>();
+      EntityBuilder<Content> builder = getEntityBuilder(type);
+      List<Entity> children = entityStore.getEntityList(parentKey, type, order, limit, offset);
+      for (Entity entity : children)
+      {
+         Content content = builder.buildContent(this, entity, true);
+         list.add(content);
+      }
+      return list;
+   }
+   
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   public Key create(Key parentKey, Content content) throws ConfigException, ContentNotUniqueException, ContentNotFoundException
+   {
+      EntityBuilder builder = getEntityBuilder(content.getMeta().getType());
+      Entity entity = null;
+      String urlKey = entityStore.makeUrlKey(content.getLabel());
+      if (parentKey == null)
+      {
+         entity = new Entity(Content.KIND, urlKey);
+      }
+      else
+      {
+         entity = new Entity(Content.KIND, urlKey, parentKey);
+      }
+      entity = builder.buildEntity(content, entity);
+      return entityStore.create(entity);
+   }
+   
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   public void update(Key parentKey, Content content) throws ConfigException, ContentNotFoundException
+   {
+      EntityBuilder builder = getEntityBuilder(content.getMeta().getType());
+      String urlKey = entityStore.makeUrlKey(content.getLabel());
+      Entity entity = new Entity(Content.KIND, urlKey, parentKey);
+      entity = builder.buildEntity(content, entity);
+      entityStore.update(entity);
+   }
+   
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   public void delete(Key parentKey, Content content) throws ConfigException, ContentNotFoundException
+   {
+      EntityBuilder builder = getEntityBuilder(content.getMeta().getType());
+      String urlKey = entityStore.makeUrlKey(content.getLabel());
+      Entity entity = new Entity(Content.KIND, urlKey, parentKey);
+      entity = builder.buildEntity(content, entity);
+      entityStore.delete(entity);
+   }
 
-        // check if entity already exists
-        ContentUrlKeyCreator<T> creator = getContentUrlKeyCreator();
-        String urlkey = creator.createUrlKey(content);
-        Key contentKey = KeyFactory.createKey(parentKey, Content.KIND, urlkey);
-        try
-        {
-            store.get(contentKey);
-            String msg = "Content already exists. " + contentKey.toString();
-            LOG.log(Level.INFO, msg);
-            throw new ContentNotUniqueException(msg);
-        }
-        catch (EntityNotFoundException e)
-        {
-            // expected!
-        }
+   public void setCreated(Key userKey, Key contentKey) throws ConfigException, ContentNotFoundException
+   {
+      Entity entity = new Entity(contentKey);
+      entity.setProperty(Content.META_CREATED_USER, userKey);
+      entityStore.update(entity);
+   }
+   
+   @SuppressWarnings("rawtypes")
+   private EntityBuilder getEntityBuilder(String type) throws ConfigException
+   {
+      if (!builders.containsKey(type))
+      {
+         Config config = ConfigFactory.getConfig();
+         EntityBuilder builder = config.getInstance(Config.ENTITY_BUILDERS, type);
+         builder.setUrlBuilder(urlBuilder);
+         builders.put(type, builder);
+      }
+      return builders.get(type);
+   }
 
-        // create and store entity
-        ContentConverter<T> converter = getContentConverter();
-        Entity contentEntity = converter.toEntity(content, new Entity(contentKey));
-        store.put(contentEntity);
-
-        // update parent entity
-        String propertyName = Content.PROP_TOTAL + contentEntity.getProperty(Content.KIND);
-        Map<String, Object> properties = parentEntity.getProperties();
-        Long total = 0L;
-        if (properties.containsKey(propertyName))
-        {
-            total = (Long) parentEntity.getProperty(propertyName);
-        }
-        parentEntity.setProperty(propertyName, new Long(total + 1));
-        store.put(parentEntity);
-        
-        return urlkey;
-    }
-
-    public void update(T content, String... urlkeys)
-            throws ParentContentNotFoundException, ContentNotFoundException
-    {
-        DatastoreService store = DatastoreServiceFactory.getDatastoreService();
-        
-        Key contentKey = makeKey(urlkeys);
-
-        // get existing entity
-        Entity contentEntity = null;
-        try
-        {
-            contentEntity = store.get(contentKey);
-        }
-        catch (EntityNotFoundException e)
-        {
-            String msg = "Unable to find content. " + contentKey.toString();
-            LOG.log(Level.INFO, msg);
-            throw new ContentNotFoundException(msg, e);
-        }
-
-        // create and store entity
-        ContentConverter<T> converter = getContentConverter();
-        contentEntity = converter.toEntity(content, contentEntity);
-        store.put(contentEntity);
-    }
-
-    public void delete(String... urlkeys)
-            throws ParentContentNotFoundException, ContentNotFoundException
-    {
-        DatastoreService store = DatastoreServiceFactory.getDatastoreService();
-        
-        Key contentKey = makeKey(urlkeys);
-
-        // check if entity already exists
-        Entity contentEntity = null;
-        try
-        {
-            contentEntity = store.get(contentKey);
-        }
-        catch (EntityNotFoundException e)
-        {
-            String msg = "Unable to find content. " + contentKey.toString();
-            LOG.log(Level.INFO, msg);
-            throw new ContentNotFoundException(msg, e);
-        }
-
-        // delete the entity
-        store.delete(contentKey);
-
-        // update parent entity
-        Key parentKey = contentKey.getParent();
-        Entity parentEntity;
-        try
-        {
-            parentEntity = store.get(parentKey);
-        }
-        catch (EntityNotFoundException e)
-        {
-            String msg = "Unable to find parent. " + parentKey.toString();
-            LOG.log(Level.INFO, msg);
-            throw new ParentContentNotFoundException(msg, e);
-        }
-        
-        String propertyName = Content.PROP_TOTAL + contentEntity.getProperty(Content.PROP_TYPE);
-        Map<String, Object> properties = parentEntity.getProperties();
-        Long total = 1L;
-        if (properties.containsKey(propertyName))
-        {
-            total = (Long) parentEntity.getProperty(propertyName);
-        }
-        parentEntity.setProperty(propertyName, new Long(total - 1));
-        store.put(parentEntity);
-    }
-
-    private Key makeKey(String... urlkeys)
-    {
-        Builder builder = new KeyFactory.Builder(Content.KIND, ROOT);
-        for (int i = 0; i < urlkeys.length; i++)
-        {
-            builder = builder.addChild(Content.KIND, urlkeys[i]);
-        }
-        return builder.getKey();
-    }
 }

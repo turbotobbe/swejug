@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>SweJug - Demo</title>
+<style>
+  td { border : 1px solid black; vertical-align : top; }
+  p { background-color: #DDD; padding: 6px; }
+</style>
+</head>
+<body>
+<h1>${self.meta.type}</h1>
+
+<p>
+#if ( ${self.meta.created} )
+Created: $util.formatDate($self.meta.created.date) by
+<a href="${self.meta.created.user.link.url}">${self.meta.created.user.link.label}</a><br />
+#end
+
+#if ( ${self.meta.updated} )
+Updated: $util.formatDate($self.meta.updated.date) by
+<a href="${self.meta.updated.user.link.url}">${self.meta.updated.user.link.label}</a><br />
+#end
+
+Logged in as
+#if ( ! $me.link )
+${me.label}
+#else
+<a href="${me.link.url}">${me.link.label}</a>
+#end
+</p>
+
+<p>
+Bread: 
+#foreach ($link in $path.build($self))
+<a href="${link.url}">${link.label}</a>
+#if($velocityHasNext) &gt; #end
+#end
+</p>
+
+#if ($user)
+<p>
+User: $user.fullname
+</p>
+#end
+
+#if ($group)
+<p>
+Group: $group.title
+</p>
+#end
+
+#if ($blog)
+<p>
+Blog: $blog.title<br/>
+Content: $blog.content
+</p>
+#end
+
+#if ($event)
+<p>
+Event: $event.title<br/>
+Content: $event.content
+</p>
+#end
+
+#if ($note)
+<p>
+Note: $note.index<br/>
+Content: $note.content
+</p>
+#end
+
+<table>
+<tr>
+<th><h2>Users ($util.nullSafe($self.meta.total.User, '0')/$util.nullSafe($root.meta.total.User, '0'))</h2></th>
+<th><h2>Groups ($util.nullSafe($self.meta.total.Group, '0')/$util.nullSafe($root.meta.total.Group, '0'))</h2></th>
+<th><h2>Blogs ($util.nullSafe($self.meta.total.Blog, '0')/$util.nullSafe($root.meta.total.Blog, '0'))</h2></th>
+<th><h2>Events ($util.nullSafe($self.meta.total.Event, '0')/$util.nullSafe($root.meta.total.Event, '0'))</h2></th>
+<th><h2>Notes ($util.nullSafe($self.meta.total.Note, '0')/$util.nullSafe($root.meta.total.Note, '0'))</h2></th>
+</tr>
+<tr>
+
+<td>
+#foreach ($user in $users)
+<p>
+<a href="${user.link.url}">${user.link.label}</a>
+</p>
+#end
+</td>
+
+<td>
+#foreach ($group in $groups)
+<p>
+<a href="${group.link.url}">${group.link.label}</a>
+</p>
+#end
+</td>
+
+<td>
+#foreach ($blog in $blogs)
+<p>
+<a href="${blog.parent.link.url}">${blog.parent.link.label}</a><br />
+<a href="${blog.link.url}">${blog.link.label}</a>
+</p>
+#end
+</td>
+
+<td>
+#foreach ($event in $events)
+<p>
+<a href="${event.parent.link.url}">${event.parent.link.label}</a><br />
+<a href="${event.link.url}">${event.link.label}</a>
+</p>
+#end
+</td>
+
+<td>
+#foreach ($note in $notes)
+<p>
+<a href="${note.parent.parent.link.url}">${note.parent.parent.link.label}</a><br />
+<a href="${note.parent.link.url}">${note.parent.link.label}</a>
+<a href="${note.link.url}">${note.link.label}</a></p>
+#end
+</td>
+
+</tr>
+</table>
+
+</body>
+</html>

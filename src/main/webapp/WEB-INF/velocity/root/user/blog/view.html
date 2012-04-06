@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>${blog.title}</title>
+</head>
+<body>
+<h1>View User Blog - ${blog.meta.type}</h1>
+<p>created: $util.formatDate($blog.meta.created)</p>
+<p>updated: $util.formatDate($blog.meta.updated)</p>
+#foreach ($key in $blog.meta.total.keySet())
+<p>
+  $key : $blog.meta.total.get($key)
+</p>
+#end
+<p>content: $blog.content</p>
+
+<h2>Notes</h2>
+#foreach ($note in $notes)
+<p>Note: $note.index</p>
+#end
+</body>
+</html>

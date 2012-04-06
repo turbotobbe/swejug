@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>${user.fullname}</title>
+</head>
+<body>
+<h1>View User - ${user.meta.type}</h1>
+<p>created: $util.formatDate($user.meta.created)</p>
+<p>updated: $util.formatDate($user.meta.updated)</p>
+#foreach ($key in $user.meta.total.keySet())
+<p>
+  $key : $user.meta.total.get($key)
+</p>
+#end
+<p>firstname: $user.firstname</p>
+<p>lastname: $user.lastname</p>
+
+<h2>Blogs</h2>
+#foreach ($blog in $blogs)
+<p>Blog: $blog.title</p>
+#end
+
+<h2>Notes</h2>
+#foreach ($note in $notes)
+<p>Note: $note.index</p>
+#end
+</body>
+</html>

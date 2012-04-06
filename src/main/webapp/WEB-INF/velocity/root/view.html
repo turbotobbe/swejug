@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>SweJug - Demo</title>
+</head>
+<body>
+<h1>${root.meta.type}</h1>
+<p>created: $util.formatDate($root.meta.created.date) <a href="$root.meta.created.user.url">$root.meta.created.user.name ($root.meta.created.user.url)</a></p>
+<p>updated: $util.formatDate($root.meta.updated.date) <a href="$root.meta.updated.user.url">$root.meta.updated.user.name ($root.meta.updated.user.url)</a></p>
+
+<h2>Totals</h2>
+#foreach ($key in $root.meta.total.keySet())
+<p>
+  $key : $root.meta.total.get($key)
+</p>
+#end
+
+
+<h2>Users</h2>
+#foreach ($user in $users)
+<p>User: $user.fullname</p>
+#end
+
+<h2>Groups</h2>
+#foreach ($group in $groups)
+<p>Group: $group.title</p>
+#end
+
+<h2>Blogs</h2>
+#foreach ($blog in $blogs)
+<p>Blog: $blog.title</p>
+#end
+
+<h2>Events</h2>
+#foreach ($event in $events)
+<p>Event: $event.title</p>
+#end
+
+<h2>Notes</h2>
+#foreach ($note in $notes)
+<p>Note: $note.index</p>
+#end
+
+<hr />
+<h4>Logged in as</h4>
+#if ( ! $me.url )
+${me.firstname}
+#else
+<a href="${me.url}">${me.fullname}</a>
+#end
+
+</body>
+</html>

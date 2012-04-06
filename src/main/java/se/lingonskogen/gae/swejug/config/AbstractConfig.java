@@ -83,12 +83,45 @@ public abstract class AbstractConfig implements Config
       return getJSONLongs(keys);
    }
    
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> T getInstance(String... keys) throws ConfigException
+   {
+      String className = getString(keys);
+      T instance = null;
+      try
+      {
+         Class<?> cls;
+         cls = Class.forName(className);
+         instance = (T) cls.newInstance();
+      }
+      catch (ClassNotFoundException e)
+      {
+         String msg = "Unable to create instance from " + className;
+         LOG.log(Level.WARNING, msg, e);
+         throw new ConfigException(msg);
+      }
+      catch (InstantiationException e)
+      {
+         String msg = "Unable to create instance from " + className;
+         LOG.log(Level.WARNING, msg, e);
+         throw new ConfigException(msg);
+      }
+      catch (IllegalAccessException e)
+      {
+         String msg = "Unable to create instance from " + className;
+         LOG.log(Level.WARNING, msg, e);
+         throw new ConfigException(msg);
+      }
+      return instance;
+   }
+   
    protected String getJSONString(String... keys)
    {
       String value = null;
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          value = json.getString(keys[keys.length-1]);
       }
       catch (JSONException e)
@@ -103,7 +136,7 @@ public abstract class AbstractConfig implements Config
       List<String> list = new ArrayList<String>();
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          JSONArray array = json.getJSONArray(keys[keys.length-1]);
          for (int i = 0; i < array.length(); i++)
          {
@@ -122,7 +155,7 @@ public abstract class AbstractConfig implements Config
       Boolean value = null;
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          value = json.getBoolean(keys[keys.length-1]);
       }
       catch (JSONException e)
@@ -137,7 +170,7 @@ public abstract class AbstractConfig implements Config
       List<Boolean> list = new ArrayList<Boolean>();
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          JSONArray array = json.getJSONArray(keys[keys.length-1]);
          for (int i = 0; i < array.length(); i++)
          {
@@ -156,7 +189,7 @@ public abstract class AbstractConfig implements Config
       Double value = null;
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          value = json.getDouble(keys[keys.length-1]);
       }
       catch (JSONException e)
@@ -171,7 +204,7 @@ public abstract class AbstractConfig implements Config
       List<Double> list = new ArrayList<Double>();
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          JSONArray array = json.getJSONArray(keys[keys.length-1]);
          for (int i = 0; i < array.length(); i++)
          {
@@ -190,7 +223,7 @@ public abstract class AbstractConfig implements Config
       Integer value = null;
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          value = json.getInt(keys[keys.length-1]);
       }
       catch (JSONException e)
@@ -205,7 +238,7 @@ public abstract class AbstractConfig implements Config
       List<Integer> list = new ArrayList<Integer>();
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          JSONArray array = json.getJSONArray(keys[keys.length-1]);
          for (int i = 0; i < array.length(); i++)
          {
@@ -224,7 +257,7 @@ public abstract class AbstractConfig implements Config
       Long value = null;
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          value = json.getLong(keys[keys.length-1]);
       }
       catch (JSONException e)
@@ -239,7 +272,7 @@ public abstract class AbstractConfig implements Config
       List<Long> list = new ArrayList<Long>();
       try
       {
-         JSONObject json = getParent(keys);
+         JSONObject json = getJSONObject(keys);
          JSONArray array = json.getJSONArray(keys[keys.length-1]);
          for (int i = 0; i < array.length(); i++)
          {
@@ -253,7 +286,7 @@ public abstract class AbstractConfig implements Config
       return list;
    }
 
-   private JSONObject getParent(String... keys) throws JSONException
+   private JSONObject getJSONObject(String... keys) throws JSONException
    {
       JSONObject json = getJSONConfig();
       for (int i = 0; i < keys.length - 1; i++)

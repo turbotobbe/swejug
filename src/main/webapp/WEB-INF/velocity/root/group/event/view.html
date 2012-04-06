@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>${event.fullname}</title>
+</head>
+<body>
+<h1>View Group Event - ${event.meta.type}</h1>
+<p>created: $util.formatDate($event.meta.created)</p>
+<p>updated: $util.formatDate($event.meta.updated)</p>
+#foreach ($key in $event.meta.total.keySet())
+<p>
+  $key : $event.meta.total.get($key)
+</p>
+#end
+<p>content: $event.content</p>
+
+<h2>Notes</h2>
+#foreach ($note in $notes)
+<p>Note: $note.index</p>
+#end
+</body>
+</html>

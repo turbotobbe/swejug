@@ -4,6 +4,14 @@ import java.util.List;
 
 public interface Config
 {
+   String META = "meta";
+   
+   String INSTALLERS = "installers";
+   
+   String JSON_BUILDERS = "jsonBuilders";
+
+   String ENTITY_BUILDERS = "entityBuilders";
+
    String getVersion();
    
    String getString(String... keys);
@@ -25,4 +33,6 @@ public interface Config
    Long getLong(String... keys);
    
    List<Long> getLongs(String... keys);
+   
+   <T> T getInstance(String... keys) throws ConfigException;
 }

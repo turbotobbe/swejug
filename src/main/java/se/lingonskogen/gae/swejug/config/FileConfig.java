@@ -17,7 +17,7 @@ public class FileConfig extends AbstractConfig implements Config
 {
    private static final Logger LOG = Logger.getLogger(FileConfig.class.getName());
    
-   private static final String PROP_CONFIG_FILE = "se.lingonskogen.gae.swejug.config.file";
+   private static final String CONFIG_FILE = "se.lingonskogen.gae.swejug.config.file";
 
    private static final String DEFAULT_CONFIG_FILE = "WEB-INF/config.json";
    
@@ -32,7 +32,7 @@ public class FileConfig extends AbstractConfig implements Config
    {
       if (config == null)
       {
-         String filename = System.getProperty(PROP_CONFIG_FILE, DEFAULT_CONFIG_FILE);
+         String filename = System.getProperty(CONFIG_FILE, DEFAULT_CONFIG_FILE);
          InputStream in = null;
          try
          {
@@ -53,5 +53,5 @@ public class FileConfig extends AbstractConfig implements Config
       }
       return config;
    }
-   
+
 }

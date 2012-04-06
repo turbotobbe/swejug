@@ -13,6 +13,7 @@
    <properties>
       <gae.version>1.6.3</gae.version>
       <jersey.version>1.12</jersey.version>
+      <velocity.version>1.7</velocity.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
 
@@ -52,6 +53,17 @@
          <version>${jersey.version}</version>
       </dependency>
 
+      <dependency>
+	<groupId>org.apache.velocity</groupId>
+	<artifactId>velocity</artifactId>
+	<version>${velocity.version}</version>
+      </dependency>
+      <dependency>
+	<groupId>org.apache.velocity</groupId>
+	<artifactId>velocity-tools</artifactId>
+	<version>2.0</version>
+      </dependency>
+            
    </dependencies>
 
    <build>

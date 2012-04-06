@@ -8,8 +8,18 @@
       <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
       <init-param>
          <param-name>com.sun.jersey.config.property.packages</param-name>
-         <!--  <param-value>se.lingonskogen.gae.swejug.content,org.codehaus.jackson.jaxrs</param-value>  -->
-         <param-value>se.lingonskogen.gae.swejug.json</param-value>
+         <!-- <param-value>se.lingonskogen.gae.swejug.content,org.codehaus.jackson.jaxrs</param-value> -->
+         <param-value>se.lingonskogen.gae.swejug.content.rest,se.lingonskogen.gae.swejug.account.rest</param-value>
+      </init-param>
+   </servlet>
+
+   <servlet>
+      <servlet-name>jersey-html</servlet-name>
+      <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+      <init-param>
+         <param-name>com.sun.jersey.config.property.packages</param-name>
+         <!-- <param-value>se.lingonskogen.gae.swejug.content,org.codehaus.jackson.jaxrs</param-value> -->
+         <param-value>se.lingonskogen.gae.swejug.content.html,se.lingonskogen.gae.swejug.account.html</param-value>
       </init-param>
    </servlet>
 
@@ -18,7 +28,25 @@
       <url-pattern>/rest/*</url-pattern>
    </servlet-mapping>
 
+   <servlet-mapping>
+      <servlet-name>jersey-html</servlet-name>
+      <url-pattern>/*</url-pattern>
+   </servlet-mapping>
+
    <listener>
-      <listener-class>se.lingonskogen.gae.swejug.InstallListener</listener-class>
+      <listener-class>se.lingonskogen.gae.swejug.context.ServletContextInstallListener</listener-class>
    </listener>
+   <listener>
+      <listener-class>se.lingonskogen.gae.swejug.context.ServletContextVelocityListener</listener-class>
+   </listener>
+<!-- 
+   <filter>
+      <filter-name>user-auth-filter</filter-name>
+      <filter-class>se.lingonskogen.gae.swejug.context.UserAuthServletFilter</filter-class>
+   </filter>
+   <filter-mapping>
+      <filter-name>user-auth-filter</filter-name>
+      <servlet-name>jersey-web</servlet-name>
+   </filter-mapping>
+    -->
 </web-app>

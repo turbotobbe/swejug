@@ -4,14 +4,23 @@
 		"version" : "${project.version}"
 	},
 	"installers" :
+	[
+		"se.lingonskogen.gae.swejug.content.ContentInstaller"
+	],
+	"entityBuilders" :
 	{
-		"classNames" :
-		[
-			"se.lingonskogen.gae.swejug.json.ContentInstaller"
-		] 
+		"Root" : "se.lingonskogen.gae.swejug.modules.root.RootEntityBuilder",
+		"User" : "se.lingonskogen.gae.swejug.modules.user.UserEntityBuilder",
+		"Blog" : "se.lingonskogen.gae.swejug.modules.blog.BlogEntityBuilder",
+		"Group" : "se.lingonskogen.gae.swejug.modules.group.GroupEntityBuilder",
+		"Event" : "se.lingonskogen.gae.swejug.modules.event.EventEntityBuilder",
+		"Note" : "se.lingonskogen.gae.swejug.modules.note.NoteEntityBuilder"
 	},
-	"test" :
+	"jsonBuilders" :
 	{
-		"lorem" : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+		"Root" : "se.lingonskogen.gae.swejug.modules.root.RootJsonBuilder",
+		"User" : "se.lingonskogen.gae.swejug.modules.user.UserJsonBuilder",
+		"Blog" : "se.lingonskogen.gae.swejug.modules.blog.BlogJsonBuilder",
+		"Note" : "se.lingonskogen.gae.swejug.modules.note.NoteJsonBuilder"
 	}
 }
