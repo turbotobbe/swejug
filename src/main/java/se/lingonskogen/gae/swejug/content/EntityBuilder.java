@@ -5,7 +5,7 @@ import se.lingonskogen.gae.swejug.oldstuff.Content;
 
 import com.google.appengine.api.datastore.Entity;
 
-public interface EntityBuilder<T extends Content>
+public interface EntityBuilder<T extends ContentBean>
 {
    Entity build(T content) throws EntityBuilderException;
    

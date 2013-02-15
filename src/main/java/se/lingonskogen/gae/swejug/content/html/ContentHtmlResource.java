@@ -38,7 +38,6 @@ import se.lingonskogen.gae.swejug.modules.group.Group;
 import se.lingonskogen.gae.swejug.modules.note.Note;
 import se.lingonskogen.gae.swejug.modules.root.Root;
 import se.lingonskogen.gae.swejug.modules.user.User;
-import se.lingonskogen.gae.swejug.oldstuff.permit.UserTokenServletFilter;
 import se.lingonskogen.gae.swejug.web.WebPathBuilder;
 
 @Path("/")
@@ -63,7 +62,7 @@ public class ContentHtmlResource
       ContentStore store = new ContentStore(Root.Label.DEFAULT.toString());
       store.setUrlBuilder(new RootLessUrlBuilder());
       
-      activeUser = (User) httpServletRequest.getAttribute(UserTokenServletFilter.ACTIVE_USER);
+      activeUser = (User) httpServletRequest.getAttribute("active-user");
       if (activeUser == null)
       {
          // get this from permit

@@ -41,18 +41,18 @@ public class ContentRestResource extends AbstractResource
    
    private static final String CONTENT = "content";
    
-   private JsonBuilder<? extends Content> getJsonBuilder(String type) throws ConfigException
+   private JsonBuilder<? extends ContentBean> getJsonBuilder(String type) throws ConfigException
    {
       Config config = ConfigFactory.getConfig();
       return config.getInstance(Config.JSON_BUILDERS, type);
    }
 
-   private JsonBuilder<? extends Content> getJsonBuilder(JSONObject json) throws ConfigException, JsonBuilderException
+   private JsonBuilder<? extends ContentBean> getJsonBuilder(JSONObject json) throws ConfigException, JsonBuilderException
    {
       String type = null;
       try
       {
-         JSONObject meta = json.getJSONObject(Content.PROP_META);
+         JSONObject meta = json.getJSONObject(ContentBean.PROP_META);
          type = meta.getString(Meta.PROP_TYPE);
       }
       catch (JSONException e)
@@ -117,7 +117,7 @@ public class ContentRestResource extends AbstractResource
       try
       {
          OldContentStore2 store = getContentStore(CONTENT);
-         Content content = store.find(Roots.DEFAULT, urlkeys);
+         ContentBean content = store.find(Roots.DEFAULT, urlkeys);
          @SuppressWarnings("rawtypes")
          JsonBuilder builder = getJsonBuilder(content.getMeta().getType());
          json = builder.build(content);
@@ -190,8 +190,8 @@ public class ContentRestResource extends AbstractResource
       String urlkey = null;
       try
       {
-         JsonBuilder<? extends Content> builder = getJsonBuilder(json);
-         Content content = builder.build(json);
+         JsonBuilder<? extends ContentBean> builder = getJsonBuilder(json);
+         ContentBean content = builder.build(json);
          OldContentStore2 store = getContentStore(CONTENT);
          urlkey = store.create(Roots.DEFAULT, content, urlkeys);
       }
@@ -270,8 +270,8 @@ public class ContentRestResource extends AbstractResource
       enter("Update", urlkeys);
       try
       {
-         JsonBuilder<? extends Content> builder = getJsonBuilder(json);
-         Content content = builder.build(json);
+         JsonBuilder<? extends ContentBean> builder = getJsonBuilder(json);
+         ContentBean content = builder.build(json);
          OldContentStore2 store = getContentStore(CONTENT);
          store.update(Roots.DEFAULT, content, urlkeys);
       }

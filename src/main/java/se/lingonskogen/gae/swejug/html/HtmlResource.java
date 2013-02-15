@@ -74,7 +74,7 @@ public class HtmlResource extends AbstractResource
       OldContentStore2 store = getContentStore(null);
       
       // get entity
-      Content content = null;
+      ContentBean content = null;
       try
       {
          content = store.find(Roots.DEFAULT, urlkeys);
